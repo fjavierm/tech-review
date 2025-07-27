@@ -1,0 +1,96 @@
+type Person {
+    id: ID!
+    name: String!
+    email: String!
+    age: Int!
+    bio: String
+    friends: [Person!]!
+    following: [Person!]!
+    followers: [Person!]!
+    friendsOfFriends: [Person!]!
+    networkConnections: [Person!]!
+    friendsCount: Int!
+    followersCount: Int!
+    followingCount: Int!
+}
+
+input PersonInput {
+    name: String!
+    email: String!
+    age: Int!
+    bio: String
+}
+
+input PersonUpdateInput {
+    name: String
+    email: String
+    age: Int
+    bio: String
+}
+
+type FriendshipResult {
+    success: Boolean!
+    message: String!
+    person1: Person
+    person2: Person
+}
+
+type FollowResult {
+    success: Boolean!
+    message: String!
+    follower: Person
+    followee: Person
+}
+
+type Query {
+    # Get all people
+    allPeople: [Person!]!
+
+    # Get person by ID
+    person(id: ID!): Person
+
+    # Get person by name
+    personByName(name: String!): Person
+
+    # Search people by name (partial match)
+    searchPeople(name: String!): [Person!]!
+
+    # Filter people by age
+    peopleOlderThan(age: Int!): [Person!]!
+    peopleYoungerThan(age: Int!): [Person!]!
+
+    # Get most popular people (by friend count)
+    mostPopularPeople(limit: Int = 10): [Person!]!
+
+    # Get friends of a person
+    friendsOf(personId: ID!): [Person!]!
+
+    # Get followers of a person
+    followersOf(personId: ID!): [Person!]!
+
+    # Get people a person is following
+    followingOf(personId: ID!): [Person!]!
+
+    # Get friends of friends
+    friendsOfFriends(personId: ID!): [Person!]!
+
+    # Get network connections (friends within 3 degrees)
+    networkConnections(personId: ID!): [Person!]!
+}
+
+type Mutation {
+    # Create a new person
+    createPerson(input: PersonInput!): Person!
+
+    # Update a person
+    updatePerson(id: ID!, input: PersonUpdateInput!): Person
+
+    # Delete a person
+    deletePerson(id: ID!): Boolean!
+
+    # Create friendship (bidirectional)
+    createFriendship(person1Id: ID!, person2Id: ID!): FriendshipResult!
+
+    # Create follow relationship (unidirectional)
+    followPerson(followerId: ID!, followeeId: ID!): FollowResult!
+}
